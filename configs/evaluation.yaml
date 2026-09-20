@@ -1,0 +1,15 @@
+evaluation:
+  batch_size: 16
+  max_new_tokens: 128
+  temperature: 0.0
+  top_p: 1.0
+  fixed_subset_path: "data/splits/eval_subset_500.jsonl"
+  full_test_path: "data/splits/test.jsonl"
+  reports_dir: "reports"
+
+quality_gates:
+  min_schema_validity_rate: 0.98
+  min_intent_macro_f1: 0.75
+  min_category_macro_f1: 0.85
+  max_p95_latency_ms: 1500
+  must_beat_baseline_a: true

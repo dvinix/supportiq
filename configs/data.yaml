@@ -1,0 +1,29 @@
+dataset:
+  hf_name: "bitext/Bitext-customer-support-llm-chatbot-training-dataset"
+  revision: "main"
+  raw_dir: "data/raw"
+  interim_dir: "data/interim"
+  processed_dir: "data/processed"
+  splits_dir: "data/splits"
+
+pipeline:
+  seed: 42
+  split_ratios:
+    train: 0.80
+    val: 0.10
+    test: 0.10
+  eval_subset_size: 500
+  clustering:
+    method: "minhash"
+    threshold: 0.80
+    num_perm: 128
+  max_seq_length: 512
+  pii:
+    enabled: true
+    entities:
+      - "EMAIL_ADDRESS"
+      - "PHONE_NUMBER"
+      - "CREDIT_CARD"
+      - "CRYPTO"
+      - "IP_ADDRESS"
+      - "IBAN_CODE"
