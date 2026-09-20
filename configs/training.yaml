@@ -1,8 +1,8 @@
 model:
-  name: "Qwen/Qwen2.5-0.5B"
+  name: "Qwen/Qwen3-4B-Base"
+  dev_model_name: "Qwen/Qwen3-0.6B-Base" # For cheap iteration & smoke tests (or Qwen/Qwen3-1.7B-Base)
   revision: "main"
-  target_final_model: "Qwen/Qwen2.5-3B"
-  torch_dtype: "float16" # "bfloat16" for A10G / SageMaker
+  torch_dtype: "float16" # Switch to "bfloat16" for SageMaker ml.g5.xlarge (A10G)
 
 lora:
   r: 16
