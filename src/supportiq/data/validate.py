@@ -1,13 +1,22 @@
 """Dataset validation, schema enforcement, and quarantine routing."""
 
 import json
+import sys
 from pathlib import Path
 from typing import Any
 
 import polars as pl
 from pydantic import ValidationError
 
-from schemas.dataset import CustomerSupportRecord, QuarantinedRecord, ValidationSummary
+try:
+    from schemas.dataset import CustomerSupportRecord, QuarantinedRecord, ValidationSummary
+except ModuleNotFoundError:
+    # If running from inside a subfolder or notebook, add project root to sys.path
+    _root = Path(__file__).resolve().parents[3]
+    if str(_root) not in sys.path:
+        sys.path.insert(0, str(_root))
+    from schemas.dataset import CustomerSupportRecord, QuarantinedRecord, ValidationSummary
+
 from supportiq.core.logger import get_logger
 
 logger = get_logger(__name__)

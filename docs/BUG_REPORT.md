@@ -92,3 +92,18 @@ This document records every error, failing test, and bug encountered during deve
   1. Created `schemas/__init__.py` to make `schemas` a proper Python package.
   2. Added `pythonpath = ["."]` under `[tool.pytest.ini_options]` in `pyproject.toml`.
   Pytest now discovers and imports root schemas seamlessly in local and CI environments.
+
+---
+
+## Bug 07 — `ModuleNotFoundError: No module named 'schemas'` When Running `02_profile.ipynb`
+- **Stage / Context:** Subtask 1.2 (`notebooks/02_profile.ipynb` execution from Jupyter / IDE)
+- **Error Encountered:**
+  ```python
+  ModuleNotFoundError: No module named 'schemas'
+  ```
+- **Where It Happened:** Cell 1 of `notebooks/02_profile.ipynb` when executing `from supportiq.data.load import load_raw_dataframe`.
+- **Root Cause:** Importing `supportiq.data.load` triggers `supportiq.data.__init__.py`, which in turn imports `validate.py`. In `validate.py`, `from schemas.dataset import ...` looked for `schemas` in `sys.path`. When Jupyter runs inside the `notebooks/` directory, Python sets the working directory and first search path to `notebooks/`, so the project root (where `schemas/` lives) was absent from `sys.path`.
+- **Remediation:**
+  1. Added a fallback in `src/supportiq/data/validate.py` to dynamically discover and inject the project root into `sys.path` if `schemas` is not found.
+  2. Added an explicit `sys.path` bootstrap guard in Cell 1 of `notebooks/02_profile.ipynb`.
+  3. Registered the virtual environment kernel via `python -m ipykernel install --user --name supportiq-env --display-name "Python (.venv supportiq)"` so that VS Code and Jupyter bind to the correct kernel.
