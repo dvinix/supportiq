@@ -75,7 +75,7 @@ def ingest_raw_dataset(
     out_path = Path(output_dir)
     out_path.mkdir(parents=True, exist_ok=True)
 
-    logger.info("Connecting to Hugging Face Hub for metadata", dataset=dataset_name)
+    logger.info("Connecting to Hugging Face Hub for metadata: %s", dataset_name)
     api = HfApi()
     repo_info = api.dataset_info(dataset_name)
     resolved_revision = repo_info.sha if revision in (None, "main") else revision
@@ -83,10 +83,10 @@ def ingest_raw_dataset(
     license_name = getattr(card_data, "license", "cdla-sharing-1.0")
 
     logger.info(
-        "Downloading dataset split",
-        dataset=dataset_name,
-        split=split,
-        revision=resolved_revision,
+        "Downloading dataset split %s (split: %s, revision: %s)",
+        dataset_name,
+        split,
+        resolved_revision,
     )
     hf_ds = load_dataset(dataset_name, split=split, revision=resolved_revision)
     df = pl.from_arrow(hf_ds.data.table)
@@ -95,7 +95,7 @@ def ingest_raw_dataset(
     csv_file = out_path / "bitext_raw.csv"
     metadata_file = out_path / "METADATA.json"
 
-    logger.info("Persisting raw artifacts", parquet=str(parquet_file), csv=str(csv_file))
+    logger.info("Persisting raw artifacts: %s, %s", parquet_file, csv_file)
     df.write_parquet(parquet_file)
     df.write_csv(csv_file)
 
@@ -127,10 +127,10 @@ def ingest_raw_dataset(
         json.dump(metadata.model_dump(), f, indent=2)
 
     logger.info(
-        "Raw dataset ingestion complete",
-        rows=df.height,
-        columns=df.width,
-        parquet_sha=parquet_sha,
+        "Raw dataset ingestion complete (%d rows, %d columns, sha256=%s)",
+        df.height,
+        df.width,
+        parquet_sha,
     )
     return df, metadata
 
@@ -146,6 +146,10 @@ def load_raw_dataframe(data_dir: Path | str = "data/raw") -> pl.DataFrame:
     """
     parquet_path = Path(data_dir) / "bitext_raw.parquet"
     if not parquet_path.exists():
-        msg = f"Raw dataset not found at {parquet_path}. Run ingest_raw_dataset first."
-        raise FileNotFoundError(msg)
+        alt_path = Path("..") / data_dir / "bitext_raw.parquet"
+        if alt_path.exists():
+            parquet_path = alt_path
+        else:
+            msg = f"Raw dataset not found at {parquet_path} or {alt_path}. Run ingest_raw_dataset first."
+            raise FileNotFoundError(msg)
     return pl.read_parquet(parquet_path)

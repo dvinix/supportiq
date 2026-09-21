@@ -6,10 +6,24 @@ from supportiq.data.load import (
     ingest_raw_dataset,
     load_raw_dataframe,
 )
+from supportiq.data.profile import (
+    DataProfileReport,
+    compute_class_distributions,
+    compute_dedup_stats,
+    compute_length_stats,
+    detect_placeholders,
+    run_full_profile,
+)
 
 __all__ = [
+    "DataProfileReport",
     "DatasetMetadata",
+    "compute_class_distributions",
+    "compute_dedup_stats",
     "compute_file_sha256",
+    "compute_length_stats",
+    "detect_placeholders",
     "ingest_raw_dataset",
     "load_raw_dataframe",
+    "run_full_profile",
 ]
