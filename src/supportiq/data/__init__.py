@@ -14,6 +14,10 @@ from supportiq.data.profile import (
     detect_placeholders,
     run_full_profile,
 )
+from supportiq.data.validate import (
+    validate_dataframe,
+    validate_single_record,
+)
 
 __all__ = [
     "DataProfileReport",
@@ -26,4 +30,6 @@ __all__ = [
     "ingest_raw_dataset",
     "load_raw_dataframe",
     "run_full_profile",
+    "validate_dataframe",
+    "validate_single_record",
 ]
