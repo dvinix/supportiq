@@ -1,0 +1,51 @@
+# =============================================================================
+# SupportIQ — Phase 1 Requirements (Dataset Handling & Data Pipeline)
+# =============================================================================
+# Install into active virtual environment with:
+#   source .venv/bin/activate
+#   pip install -r requirements.txt
+# Or using uv (recommended):
+#   uv sync --group dev --group data
+# =============================================================================
+
+# --- Core Configuration & Settings ---
+pydantic>=2.7.0           # Data validation & record schema enforcement
+pydantic-settings>=2.2.0  # Typed config loading from YAML & environment variables
+pyyaml>=6.0.1             # YAML configuration parser
+python-dotenv>=1.0.0      # Environment variable loading
+
+# --- Dataset Ingestion & Processing ---
+datasets>=2.18.0          # Hugging Face Datasets loader (Bitext dataset)
+huggingface-hub>=0.20.0   # Hugging Face Hub client & snapshot downloads
+polars>=1.0.0             # High-performance columnar data processing
+pyarrow>=15.0.0           # Arrow IPC and Parquet format serialization
+
+# --- Tokenizer & Profiling (CPU only, no GPU needed) ---
+transformers>=4.40.0      # AutoTokenizer for Qwen sequence length profiling
+tokenizers>=0.19.0        # Fast Rust-based Hugging Face tokenizer backend
+
+# --- PII Analysis & Sanitization ---
+presidio-analyzer>=2.2.355    # Microsoft Presidio PII detection engine
+presidio-anonymizer>=2.2.355  # Presidio entity masking and token replacement
+spacy>=3.7.4                  # NLP backend for Presidio entity recognition
+# Note: Download English model after install:
+#   python -m spacy download en_core_web_sm
+
+# --- Clustering & Deduplication ---
+datasketch>=1.6.4         # MinHash LSH for near-duplicate template clustering
+scikit-learn>=1.4.0       # Cosine similarity and pairwise feature analysis
+
+# --- Data Version Control ---
+dvc>=3.48.0               # Data Version Control for reproducible pipelines
+
+# --- Exploratory Notebooks & Progress ---
+jupyter>=1.1.1            # Jupyter Notebook environment
+ipykernel>=6.0.0          # IPython kernel support for notebooks
+tqdm>=4.66.0              # Terminal & notebook progress bars
+
+# --- Testing & Code Quality ---
+pytest>=8.0.0             # Unit and integration test suite
+pytest-cov>=4.1.0         # Test coverage reporting
+ruff>=0.9.0               # High-speed linter and formatter
+pre-commit>=3.7.0         # Git pre-commit hook runner
+detect-secrets>=1.5.0     # Secret scanning hook

@@ -59,6 +59,8 @@ dev = [
     "ruff>=0.9.0",
     "pre-commit>=3.7.0",
     "detect-secrets>=1.5.0",
+    "jupyter>=1.1.1",
+    "ipykernel>=7.3.0",
 ]
 data = [
     "polars>=1.0.0",
@@ -70,6 +72,8 @@ data = [
     "spacy>=3.7.4",
     "datasketch>=1.6.4",
     "dvc>=3.48.0",
+    "transformers>=4.40.0",
+    "tokenizers>=0.19.0",
 ]
 train = [
     "torch>=2.2.0",
