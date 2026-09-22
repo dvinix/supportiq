@@ -504,7 +504,7 @@ every performance claim links to a report file.
 - Results come from scripts and are saved to files, never typed by hand.
 - Docs updated, commit made, cloud cost impact recorded.
 
-## Appendix B — Things the agent must never do
+## Appendix B — Things the agent must never doD
 
 - Train or run the 4B model locally on CPU.
 - Launch billable AWS resources without a [GATE] approval.

@@ -107,3 +107,21 @@ This document records every error, failing test, and bug encountered during deve
   1. Added a fallback in `src/supportiq/data/validate.py` to dynamically discover and inject the project root into `sys.path` if `schemas` is not found.
   2. Added an explicit `sys.path` bootstrap guard in Cell 1 of `notebooks/02_profile.ipynb`.
   3. Registered the virtual environment kernel via `python -m ipykernel install --user --name supportiq-env --display-name "Python (.venv supportiq)"` so that VS Code and Jupyter bind to the correct kernel.
+
+---
+
+## Bug 08 — Harmless Stderr Warning: `[transformers] PyTorch was not found...` on Import
+- **Stage / Context:** Stage 1 & Stage 2 Data Pipeline Notebooks (`01_load_and_inspect.ipynb`, `03_validate_and_quarantine.ipynb`)
+- **Error / Message Encountered:**
+  ```text
+  [transformers] PyTorch was not found. Models won't be available and only tokenizers, configuration and file/data utilities can be used.
+  ```
+- **Where It Happened:** Block 1 in data processing notebooks when importing from `supportiq.data`.
+- **Root Cause:**
+  1. In Stage 1 & 2 (Data Engineering), we only need lightweight BPE tokenization (Qwen tokenizer) to profile token distributions, so PyTorch (a 2GB+ deep learning framework) is omitted to keep the environment lightweight until Phase 3 (Fine-Tuning).
+  2. In `src/supportiq/data/__init__.py`, `profile.py` was imported. In `profile.py`, `from transformers import AutoTokenizer` was placed at the top level.
+  3. Whenever `transformers` is imported without PyTorch installed, it prints an advisory notification to `stderr`. In Jupyter notebooks, `stderr` messages appear highlighted or reddish, confusing beginners into thinking the cell crashed.
+- **Remediation:**
+  1. Converted `AutoTokenizer` into a **lazy import** inside `compute_token_length_stats()` in `src/supportiq/data/profile.py`, so `transformers` is never imported unless token length profiling is explicitly invoked.
+  2. Set `os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"` before importing, suppressing the advisory notice entirely.
+  3. Notebook cell 1 now runs completely clean with zero stderr warnings.

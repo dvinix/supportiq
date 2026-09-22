@@ -1,0 +1,84 @@
+# SupportIQ — Domain Taxonomy Configuration
+# Derived directly from the Bitext Customer Support Dataset.
+# Total Categories: 11
+# Total Intents: 27
+#
+# Purpose:
+# 1. Validation: Ensures that training data, evaluation samples, and future incoming production
+#    requests strictly match known business categories and intents.
+# 2. Schema Guardrail: Used by the FastAPI service to reject unknown categories/intents before
+#    passing them to downstream billing or order management systems.
+
+version: "1.0"
+
+categories:
+  ACCOUNT:
+    description: "Account creation, profile updates, and login/credential issues"
+    intents:
+      - create_account
+      - delete_account
+      - edit_account
+      - recover_password
+      - registration_problems
+      - switch_account
+
+  CANCEL:
+    description: "Inquiries regarding general cancellation policies and associated fees"
+    intents:
+      - check_cancellation_fee
+
+  CONTACT:
+    description: "Escalation to human agents and direct support channels"
+    intents:
+      - contact_customer_service
+      - contact_human_agent
+
+  DELIVERY:
+    description: "Shipping timeline, options, and estimated delivery windows"
+    intents:
+      - delivery_options
+      - delivery_period
+
+  FEEDBACK:
+    description: "Customer feedback, formal complaints, and service reviews"
+    intents:
+      - complaint
+      - review
+
+  INVOICE:
+    description: "Billing statements, invoice retrieval, and fee breakdowns"
+    intents:
+      - check_invoice
+      - get_invoice
+
+  ORDER:
+    description: "Order lifecycle operations: placement, modifications, tracking, and cancellation"
+    intents:
+      - cancel_order
+      - change_order
+      - place_order
+      - track_order
+
+  PAYMENT:
+    description: "Accepted payment methods, failed transactions, and payment verification"
+    intents:
+      - check_payment_methods
+      - payment_issue
+
+  REFUND:
+    description: "Refund status, reimbursement tracking, and refund eligibility rules"
+    intents:
+      - check_refund_policy
+      - get_refund
+      - track_refund
+
+  SHIPPING:
+    description: "Shipping destination management and physical address changes"
+    intents:
+      - change_shipping_address
+      - set_up_shipping_address
+
+  SUBSCRIPTION:
+    description: "Recurring subscriptions, mailing lists, and promotional newsletters"
+    intents:
+      - newsletter_subscription

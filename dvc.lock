@@ -1,0 +1,24 @@
+schema: '2.0'
+stages:
+  process_data:
+    cmd: uv run python -m supportiq.data.pipeline
+    deps:
+    - path: configs/data.yaml
+      hash: md5
+      md5: baa1e4572eb56d0e09d227cea8fc49b9
+      size: 584
+    - path: data/raw
+      hash: md5
+      md5: 4c135ab65e03d75e29d8fd2e31826e6b.dir
+      size: 22393515
+      nfiles: 4
+    - path: src/supportiq/data/pipeline.py
+      hash: md5
+      md5: f77db71e1aa59589d700f6ee7fef09fa
+      size: 9768
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: caba694e605fcd3412c0892218efbf44.dir
+      size: 31979819
+      nfiles: 8

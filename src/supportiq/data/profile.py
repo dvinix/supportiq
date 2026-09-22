@@ -7,7 +7,6 @@ from pathlib import Path
 import numpy as np
 import polars as pl
 from pydantic import BaseModel
-from transformers import AutoTokenizer
 
 from supportiq.core.logger import get_logger
 
@@ -179,6 +178,11 @@ def compute_token_length_stats(
     df: pl.DataFrame, tokenizer_name: str = "Qwen/Qwen2.5-0.5B"
 ) -> dict[str, PercentileStats]:
     """Compute token lengths using the specified Hugging Face tokenizer."""
+    import os
+
+    os.environ["TRANSFORMERS_NO_ADVISORY_WARNINGS"] = "1"
+    from transformers import AutoTokenizer
+
     logger.info("Loading tokenizer for sequence length profiling: %s", tokenizer_name)
     tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
 

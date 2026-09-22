@@ -1,0 +1,12 @@
+# SupportIQ — DVC Reproducible Pipeline Definition
+# Run `dvc repro` to execute all out-of-date stages automatically.
+
+stages:
+  process_data:
+    cmd: uv run python -m supportiq.data.pipeline
+    deps:
+      - data/raw
+      - src/supportiq/data/pipeline.py
+      - configs/data.yaml
+    outs:
+      - data/processed
