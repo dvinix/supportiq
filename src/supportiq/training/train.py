@@ -68,9 +68,10 @@ def run_training_gpu(
             AutoModelForCausalLM,
             AutoTokenizer,
             BitsAndBytesConfig,
-            TrainingArguments,
         )
-        from trl import SFTTrainer
+
+        # TRL >=0.9: SFTConfig replaces TrainingArguments + SFT-specific kwargs
+        from trl import SFTConfig, SFTTrainer
     except ImportError as e:
         logger.error("Missing GPU deep learning dependencies: %s", e)
         print("Error: PyTorch and Hugging Face GPU packages are required for real training.")
@@ -121,8 +122,11 @@ def run_training_gpu(
         data_files={"train": train_path, "validation": val_path},
     )
 
-    # 5. Training Arguments
-    training_args = TrainingArguments(
+    # 5. SFTConfig (TRL >=0.9: merges TrainingArguments + SFT-specific settings)
+    # dataset_text_field and max_seq_length now live here, not in SFTTrainer.
+    # Our dataset has a 'messages' key with [{role, content}] pairs — TRL
+    # auto-detects the conversational format and applies the Qwen chat template.
+    sft_config = SFTConfig(
         output_dir=output_dir,
         per_device_train_batch_size=config.training.per_device_train_batch_size,
         gradient_accumulation_steps=config.training.gradient_accumulation_steps,
@@ -131,7 +135,7 @@ def run_training_gpu(
         logging_steps=config.training.logging_steps,
         save_strategy=config.training.save_strategy,
         save_steps=config.training.save_steps,
-        evaluation_strategy=config.training.evaluation_strategy,
+        eval_strategy=config.training.evaluation_strategy,
         eval_steps=config.training.eval_steps,
         save_total_limit=config.training.save_total_limit,
         fp16=(compute_dtype == torch.float16),
@@ -139,18 +143,17 @@ def run_training_gpu(
         optim="paged_adamw_8bit",
         seed=config.training.seed,
         report_to="none",
+        max_seq_length=config.training.max_seq_length,
     )
 
-    # 6. SFTTrainer
+    # 6. SFTTrainer — processing_class replaces tokenizer in TRL >=0.10
     trainer = SFTTrainer(
         model=model,
         train_dataset=dataset["train"],
         eval_dataset=dataset["validation"],
         peft_config=lora_config,
-        dataset_text_field="messages",
-        max_seq_length=config.training.max_seq_length,
-        tokenizer=tokenizer,
-        args=training_args,
+        processing_class=tokenizer,
+        args=sft_config,
     )
 
     logger.info("Starting SFT training loop...")
